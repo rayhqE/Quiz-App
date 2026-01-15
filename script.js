@@ -36,6 +36,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   startBtn.addEventListener("click", startQuiz);
 
+  nextBtn.addEventListener("click", nextQuestion);
+
+  restartBtn.addEventListener("click", () => {
+    currentQuestionIndex = 0;
+    score = 0;
+    resultContainer.classList.add("hidden");
+    startQuiz();
+  });
+
   function startQuiz() {
     startBtn.classList.add("hidden");
     resultContainer.classList.add("hidden");
@@ -43,5 +52,37 @@ document.addEventListener("DOMContentLoaded", () => {
     showQuestion();
   }
 
-  function showQuestion() {}
+  function showQuestion() {
+    nextBtn.classList.add("hidden");
+    questionText.textContent = questions[currentQuestionIndex].question;
+    choicesList.innerHTML = "";
+    questions[currentQuestionIndex].choices.forEach((choice) => {
+      const li = document.createElement("li");
+      li.textContent = choice;
+      li.addEventListener("click", () => selectAnswer(choice));
+      choicesList.appendChild(li);
+    });
+  }
+
+  function selectAnswer(choice) {
+    const correctAnswer = questions[currentQuestionIndex].answer;
+    if (choice === correctAnswer) {
+      score++;
+    }
+    nextBtn.classList.remove("hidden");
+  }
+  function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+      showQuestion();
+    } else {
+      showResult();
+    }
+  }
+
+  function showResult() {
+    questionContainer.classList.add("hidden");
+    resultContainer.classList.remove("hidden");
+    scorDisplay.textContent = `${score} out of ${questions.length}`;
+  }
 });
